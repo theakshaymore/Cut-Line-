@@ -1,0 +1,115 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  customer
+  barber
+  admin
+}
+
+enum ChairStatus {
+  idle
+  occupied
+  done
+}
+
+enum QueueStatus {
+  waiting
+  called
+  seated
+  done
+  no_show
+}
+
+enum NotificationType {
+  queue_update
+  your_turn
+  no_show_warning
+  position_changed
+}
+
+model User {
+  id            String          @id @default(uuid())
+  name          String
+  phone         String          @unique
+  email         String          @unique
+  passwordHash  String
+  role          Role            @default(customer)
+  fcmToken      String?
+  createdAt     DateTime        @default(now())
+  salon         Salon?
+  queueEntries  QueueEntry[]
+  notifications Notification[]
+}
+
+model Salon {
+  id             String       @id @default(uuid())
+  name           String
+  address        String
+  latitude       Float
+  longitude      Float
+  ownerId        String       @unique
+  owner          User         @relation(fields: [ownerId], references: [id])
+  avgServiceTime Int          @default(20)
+  isVerified     Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+  chairs         Chair[]
+  queueEntries   QueueEntry[]
+}
+
+model Chair {
+  id                  String      @id @default(uuid())
+  salonId             String
+  salon               Salon       @relation(fields: [salonId], references: [id])
+  label               String
+  status              ChairStatus @default(idle)
+  currentQueueEntryId String?     @unique
+  currentEntry        QueueEntry? @relation("ActiveChair", fields: [currentQueueEntryId], references: [id])
+  createdAt           DateTime    @default(now())
+  queueEntries        QueueEntry[] @relation("AssignedChair")
+}
+
+model QueueEntry {
+  id             String      @id @default(uuid())
+  customerId     String
+  customer       User        @relation(fields: [customerId], references: [id])
+  salonId        String
+  salon          Salon       @relation(fields: [salonId], references: [id])
+  assignedChairId String?
+  assignedChair  Chair?      @relation("AssignedChair", fields: [assignedChairId], references: [id])
+  activeOnChair  Chair?      @relation("ActiveChair")
+  position       Int
+  status         QueueStatus @default(waiting)
+  service        String
+  estimatedWait  Int
+  joinedAt       DateTime    @default(now())
+  calledAt       DateTime?
+  servedAt       DateTime?
+
+  @@index([salonId, status])
+}
+
+model Notification {
+  id        String           @id @default(uuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id])
+  message   String
+  type      NotificationType
+  isRead    Boolean          @default(false)
+  createdAt DateTime         @default(now())
+}
+
+model BarberInvite {
+  id        String    @id @default(uuid())
+  email     String
+  salonName String
+  token     String    @unique
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+}
