@@ -254,3 +254,17 @@ When future code changes are made, update this `summary.md` in the same change s
 ### Docs updates
 - Updated `README.md` with Docker Compose startup/stop instructions.
 - Added theme section documenting dark/light toggle behavior.
+
+### Typography update
+- Added global `Inter` font across the website via Google Fonts import in:
+  - `client/src/index.css`
+
+### Latest UI access update
+- Replaced global font with `Goudy Bookletter 1911` in:
+  - `client/src/index.css`
+- Reverted global font back to `Inter` in:
+  - `client/src/index.css`
+- Added a floating bottom-right `Admin` button that routes to `/admin`:
+  - `client/src/App.jsx`
+- Increased global typography weight/size for better readability with this font:
+  - `client/src/index.css`
