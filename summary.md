@@ -415,6 +415,7 @@ When future code changes are made, update this `summary.md` in the same change s
 - Trimmed `README.md` to repository/project information only:
   - removed run/setup/how-to-execute command sections
   - retained architecture, features, API/event surface, and config references
+- Removed obsolete `version` key from root `docker-compose.yml` to avoid Docker Compose v2 warning.
 
 ### Latest backend modernization + admin governance update
 - Migrated backend from CommonJS to ESM (`import/export`):
