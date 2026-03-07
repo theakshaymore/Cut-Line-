@@ -5,7 +5,7 @@ CutLine is a full-stack digital salon queue management system with two roles:
 - Customer: discover nearby salons, join queue remotely, track live position
 - Barber: manage chairs, assign next customer, mark done/no-show in real-time
 
-![CutLine Screenshot](./ss1.png)
+![CutLine Screenshot](./cutline.gif)
 
 ## Tech Stack
 
